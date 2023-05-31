@@ -67,7 +67,7 @@ public function login (Request $request){
     //$status = 0;
 
     $validate = Validator::make($loginData, [
-        'name' => 'required',
+        'email' => 'required',
         'password' => 'required'
     ]);
 
@@ -80,9 +80,11 @@ public function login (Request $request){
 
         return response([
             'message' => 'Authenticated',
-            'user' => $user,
-            'token_type' => 'Bearer',
-            'access_token' => $token,
+            'data' => [
+                'user' => $user,
+                'token_type' => 'Bearer',
+                'access_token' => $token,
+            ]
         ]);
     }else{
         return response(['message' => 'Invalid Credentials user'], 401);  // Mengembalikan error gagal login
