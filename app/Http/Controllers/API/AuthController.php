@@ -24,10 +24,14 @@ class AuthController extends Controller
             'height' => 'required',
             'password' => 'required|min:6|max:255'
         ]);
-        if($validate->fails()){
-            return response()->json([
-                'status' => 'error',
-                'message' => $validate->errors()], 400);
+        if ($validate->fails()) {
+            $errors = $validate->errors();
+            $response = [
+                'message' => 'Registrasi gagal. Silakan periksa semua bagian yang ditandai.',
+                'errors' => $errors->toArray()
+            ];
+            
+            return response()->json($response, 400);
         }
         $registerData['password'] = bcrypt($registerData['password']);
         $user = User::create($registerData);
@@ -72,7 +76,7 @@ public function login (Request $request){
     ]);
 
     if($validate->fails())
-        return response(['message' => $validate->errors()], 400);
+        return response(['message'=> $validate->errors()->first(),'errors' => $validate->errors()], 400);
 
     if(Auth::guard('web')->attempt($loginData)){
         $user = Auth::user();
